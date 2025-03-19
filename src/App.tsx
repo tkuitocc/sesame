@@ -1,20 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import JsBarcode from 'jsbarcode';
 
-type FormatOption = 'CODE39' | 'EAN13' | 'UPC' | 'EAN8' | 'CODE128';
-
 const App: React.FC = () => {
-  const [barcodeText, setBarcodeText] = useState('12345678');
-  const [barcodeFormat, setBarcodeFormat] = useState<FormatOption>('CODE39');
-
-  // We'll generate the barcode into this SVG element
+  const [barcodeText, setBarcodeText] = useState('000000000');
+  const [barcodeFormat, setBarcodeFormat] = useState('CODE39');
   const svgRef = useRef<SVGSVGElement>(null);
 
+  // Automatically generate barcode on text/format change
   useEffect(() => {
     if (svgRef.current) {
       try {
         JsBarcode(svgRef.current, barcodeText, {
-          format: barcodeFormat,   // E.g., CODE39, EAN13, etc.
+          format: barcodeFormat,
           lineColor: '#000000',
           width: 2,
           height: 100,
@@ -28,83 +25,84 @@ const App: React.FC = () => {
     }
   }, [barcodeText, barcodeFormat]);
 
-  // Optional: Provide some info about each format
-  const formatRequirements: Record<FormatOption, string> = {
-    EAN13: 'Requires exactly 12 or 13 numeric digits',
-    UPC: 'Requires exactly 11 or 12 numeric digits',
-    EAN8: 'Requires exactly 7 or 8 numeric digits',
-    CODE39: 'Alphanumeric, spaces, and some special characters',
-    CODE128: 'Can encode all ASCII characters',
+  // Clear the inputs back to defaults
+  const handleClear = () => {
+    setBarcodeText('');
+    setBarcodeFormat('CODE128');
   };
 
   return (
-    <div style={{ margin: '2rem', justifyContent: 'center', alignItems: 'center' }}>
+    <div
+      style={{
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        paddingTop: '2rem',
+      }}
+    >
+      {/* Card Container */}
       <div
         style={{
-          width: '400px',
-          margin: '0 auto', 
-          textAlign: 'center',
-          paddingTop: '1rem',
-        }}>
-        <div >
-          {/* The barcode will be generated inside this SVG */}
-          <svg ref={svgRef}></svg>
+          backgroundColor: '#fff',
+          border: '1px solid #ddd',
+          borderRadius: '0.5rem',
+          width: '90%',
+          maxWidth: '400px',
+          padding: '2rem',
+          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+        }}
+      >
+        {/* Barcode Preview */}
+        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+          <svg ref={svgRef} />
         </div>
 
-        <h1>Sesame</h1>
-
+        {/* Barcode Text Input */}
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '.5rem' }}>
-            <strong>Barcode Text</strong>
+          <label
+            style={{
+              display: 'block',
+              marginBottom: '.5rem',
+              fontWeight: 600,
+            }}
+          >
+            Barcode Text
           </label>
           <input
             type="text"
             value={barcodeText}
             onChange={(e) => setBarcodeText(e.target.value)}
-            style={{ width: '300px', padding: '0.5rem' }}
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '0.25rem',
+              border: '1px solid #ccc',
+            }}
           />
         </div>
 
-        <button
-          style={{
-            width: '150px',
-            height: '40px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: '500',
-            transition: 'background-color 0.2s ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '1rem auto',
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#45a049';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = '#4CAF50';
-          }}
-          onClick={() => {
-            setBarcodeText('');
-          }}
-        >
-          Clear
-        </button>
-
-        <div style={{ 
-          marginBottom: '1rem',
-          padding: '0.5rem',
-          }}
-        >
-          <label style={{ display: 'block', marginBottom: '.5rem' }}>
-            <strong>Barcode Format</strong>
+        {/* Barcode Format Select */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label
+            style={{
+              display: 'block',
+              marginBottom: '.5rem',
+              fontWeight: 600,
+            }}
+          >
+            Barcode Format
           </label>
           <select
             value={barcodeFormat}
-            onChange={(e) => setBarcodeFormat(e.target.value as FormatOption)}
-            style={{ width: '150px', padding: '0.5rem' }}
+            onChange={(e) => setBarcodeFormat(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '0.25rem',
+              border: '1px solid #ccc',
+            }}
           >
             <option value="CODE39">CODE39</option>
             <option value="EAN13">EAN13</option>
@@ -114,6 +112,45 @@ const App: React.FC = () => {
           </select>
         </div>
 
+        {/* Clear Button */}
+        <button
+          onClick={handleClear}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '0.25rem',
+            cursor: 'pointer',
+            fontSize: '1rem',
+            fontWeight: 600,
+            marginBottom: '1rem',
+          }}
+        >
+          Clear
+        </button>
+
+        {/* Note Section */}
+        <div
+          style={{
+            fontSize: '0.875rem',
+            backgroundColor: '#f9f9f9',
+            padding: '1rem',
+            borderRadius: '0.25rem',
+            border: '1px solid #eee',
+          }}
+        >
+          <strong>Note:</strong> Different barcode formats have different
+          requirements:
+          <ul style={{ marginTop: '0.5rem', paddingLeft: '1.25rem' }}>
+            <li>EAN13: Requires exactly 12 or 13 numeric digits</li>
+            <li>UPC: Requires exactly 11 or 12 numeric digits</li>
+            <li>EAN8: Requires exactly 7 or 8 numeric digits</li>
+            <li>CODE39: Alphanumeric characters, spaces, and some special characters</li>
+            <li>CODE128: Can encode all ASCII characters</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
