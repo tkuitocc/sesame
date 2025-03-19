@@ -41,7 +41,7 @@ const App: React.FC = () => {
     <div style={{ margin: '2rem', justifyContent: 'center', alignItems: 'center' }}>
       <div
         style={{
-          width: '600px',
+          width: '400px',
           margin: '0 auto', 
           textAlign: 'center',
           paddingTop: '1rem',
@@ -65,7 +65,39 @@ const App: React.FC = () => {
           />
         </div>
 
-        <div style={{ marginBottom: '1rem' }}>
+        <button
+          style={{
+            width: '150px',
+            height: '40px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontWeight: '500',
+            transition: 'background-color 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '1rem auto',
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#45a049';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#4CAF50';
+          }}
+          onClick={() => {
+            setBarcodeText('');
+          }}
+        >
+          Clear
+        </button>
+
+        <div style={{ 
+          marginBottom: '1rem',
+          padding: '0.5rem',
+          }}
+        >
           <label style={{ display: 'block', marginBottom: '.5rem' }}>
             <strong>Barcode Format</strong>
           </label>
@@ -82,9 +114,6 @@ const App: React.FC = () => {
           </select>
         </div>
 
-        <div style={{ marginTop: '2rem' }}>
-          <p><em>{formatRequirements[barcodeFormat]}</em></p>
-        </div>
       </div>
     </div>
   );
